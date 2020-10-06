@@ -23,6 +23,7 @@ public class GUI extends Application {
     private TextArea textarea = null;
     private File file = null;
     private FileChooser openFileDialog = null;
+    private String WINDOW_NAME = "Spell Checker";
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -36,7 +37,7 @@ public class GUI extends Application {
 
         Scene scene = new Scene(root, 400, 300);
 
-        stage.setTitle("SpellChecker");
+        stage.setTitle(WINDOW_NAME);
         stage.setScene(scene);
         stage.show();
     }
@@ -48,7 +49,9 @@ public class GUI extends Application {
         Menu editMenu = new Menu("Edit");
         menuBar.getMenus().addAll(fileMenu, editMenu);
 
+        //open menu item
         MenuItem open = new MenuItem("Open");
+        //event handler for open menu item
         open.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -62,21 +65,24 @@ public class GUI extends Application {
 
         });
 
+        //save menu item
         MenuItem save = new MenuItem("Save");
+        //event handler for save menu item
         save.setOnAction(new EventHandler<ActionEvent>() {
             FileChooser saveFileDialog = new FileChooser();
 
             @Override
             public void handle(ActionEvent event) {
                 if (file == null) {
-
                     file = saveFileDialog.showSaveDialog(stage);
                 }
                 saveFile(file);
-
             }
         });
+
+        //exit menu item
         MenuItem exit = new MenuItem("Exit");
+        //event handler for exit menu item
         exit.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -92,7 +98,6 @@ public class GUI extends Application {
     }
 
     private TextArea createTextArea() {
-
         this.textarea = new TextArea();
         this.textarea.setWrapText(true);
         return this.textarea;

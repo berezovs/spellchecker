@@ -1,5 +1,8 @@
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -16,6 +19,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class GUI extends Application {
+
+    private TextArea textarea = null;
+    private File file = null;
+    private FileChooser openFileDialog = null;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -43,11 +50,11 @@ public class GUI extends Application {
 
         MenuItem open = new MenuItem("Open");
         open.setOnAction(new EventHandler<ActionEvent>() {
-            FileChooser fileChooser = new FileChooser();
 
             @Override
             public void handle(ActionEvent event) {
-                File file = fileChooser.showOpenDialog(stage);
+                openFileDialog = new FileChooser();
+                file = openFileDialog.showOpenDialog(stage);
                 if (file != null) {
                     loadFileIntoTextArea(file);
                 }
@@ -57,10 +64,15 @@ public class GUI extends Application {
 
         MenuItem save = new MenuItem("Save");
         save.setOnAction(new EventHandler<ActionEvent>() {
+            FileChooser saveFileDialog = new FileChooser();
 
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Save");
+                if (file == null) {
+
+                    file = saveFileDialog.showSaveDialog(stage);
+                }
+                saveFile(file);
 
             }
         });
@@ -80,11 +92,37 @@ public class GUI extends Application {
     }
 
     private TextArea createTextArea() {
-        return new TextArea();
+
+        this.textarea = new TextArea();
+        this.textarea.setWrapText(true);
+        return this.textarea;
     }
 
     private void loadFileIntoTextArea(File file) {
         System.out.println("File name: " + file.getName());
+        try {
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                textarea.appendText(scanner.nextLine());
+            }
+            scanner.close();
+        } catch (FileNotFoundException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void saveFile(File file) {
+        String content = this.textarea.getText();
+
+        try {
+            PrintWriter writer = new PrintWriter(file);
+            writer.println(content);
+            writer.close();
+
+        } catch (FileNotFoundException exception) {
+            exception.printStackTrace();
+        }
+
     }
 
     public static void launchApp() {

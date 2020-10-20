@@ -1,9 +1,7 @@
-
+import java.util.List;
 
 class Main {
-    public static void main(String[] args){
-     GUI.launchApp();
-     WordBank bank = new WordBank();
-     bank.loadWordsFromFile("dictionary.txt");
+    public static void main(String[] args) {
+        AppController controller = new AppController();
     }
 }

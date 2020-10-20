@@ -10,10 +10,12 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -23,6 +25,7 @@ public class GUI extends Application {
     private TextArea textarea = null;
     private File file = null;
     private FileChooser openFileDialog = null;
+    Alert spellCheckDialog = null;
     private String WINDOW_NAME = "Spell Checker";
 
     @Override
@@ -44,10 +47,28 @@ public class GUI extends Application {
 
     public MenuBar createMenu(Stage stage) {
         MenuBar menuBar = new MenuBar();
-
         Menu fileMenu = new Menu("File");
         Menu editMenu = new Menu("Edit");
         menuBar.getMenus().addAll(fileMenu, editMenu);
+
+        //spellcheck menu item
+        MenuItem spellCheck = new MenuItem("Check Spelling");
+
+        spellCheck.setOnAction(new EventHandler<ActionEvent>(){
+           
+
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Clicked on Check Spelling");
+                spellCheckDialog = new Alert(AlertType.CONFIRMATION);
+                spellCheckDialog.setTitle("Spellchecker");
+                spellCheckDialog.setHeaderText(null);
+                spellCheckDialog.showAndWait();
+            }
+            
+        });
+
+        editMenu.getItems().addAll(spellCheck);
 
         //open menu item
         MenuItem open = new MenuItem("Open");
@@ -87,7 +108,6 @@ public class GUI extends Application {
 
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Exit");
                 Platform.exit();
             }
         });
@@ -97,11 +117,20 @@ public class GUI extends Application {
         return menuBar;
     }
 
+    public Alert getAlertWindow(){
+        return this.spellCheckDialog;
+    }
+
+    public String getTextAreaContent(){
+        return this.textarea.getText();
+    }
+
     private TextArea createTextArea() {
         this.textarea = new TextArea();
         this.textarea.setWrapText(true);
         return this.textarea;
     }
+    
 
     private void loadFileIntoTextArea(File file) {
         System.out.println("File name: " + file.getName());

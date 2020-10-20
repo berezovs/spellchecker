@@ -22,6 +22,7 @@ public class WordBank {
                 word = word.toLowerCase();
                 this.addWordToBank(word);
             }
+            scanner.close();
         } catch (FileNotFoundException exception) {
             exception.printStackTrace();
         }
@@ -31,9 +32,9 @@ public class WordBank {
         this.wordBank.put(word, word);
     }
 
-    public String findWord(String word) {
+    public boolean findWord(String word) {
         if (wordBank.contains(word))
-            return wordBank.get(word);
-        return null;
+            return true;
+        return false;
     }
 }

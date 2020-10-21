@@ -2,21 +2,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 class SpellChecker {
-    WordBank wordBank = null;
-    List<String> suggestedWords = null;
+    private WordBank wordBank = null;
+    private List<String> suggestedWords = null;
 
     SpellChecker(WordBank bank) {
         this.wordBank = bank;
-        suggestedWords = new ArrayList<>();
+        
     }
 
     public List<String> getListOfSuggestions(String word) {
         String newWord = "";
         word = word.trim().toLowerCase();
+        suggestedWords = new ArrayList<>();
 
         // add a letter to the word
         for (char letter = 'a'; letter <= 'z'; letter++) {
             for (int i = 0; i < word.length(); i++) {
+                
                 String leftSubStr = word.substring(0, i);
                 String rightSubStr = word.substring(i);
 
@@ -44,7 +46,7 @@ class SpellChecker {
         return suggestedWords;
     }
 
-    private boolean wordExists(String word) {
+    public boolean wordExists(String word) {
         return wordBank.findWord(word);
     }
 }

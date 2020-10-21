@@ -1,7 +1,7 @@
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Scanner;
 
 import javafx.application.Application;
@@ -51,28 +51,28 @@ public class GUI extends Application {
         Menu editMenu = new Menu("Edit");
         menuBar.getMenus().addAll(fileMenu, editMenu);
 
-        //spellcheck menu item
+        // spellcheck menu item
         MenuItem spellCheck = new MenuItem("Check Spelling");
 
-        spellCheck.setOnAction(new EventHandler<ActionEvent>(){
-           
+        spellCheck.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Clicked on Check Spelling");
+                String message = getAlertMessage(textarea.getText());
                 spellCheckDialog = new Alert(AlertType.CONFIRMATION);
                 spellCheckDialog.setTitle("Spellchecker");
                 spellCheckDialog.setHeaderText(null);
+                spellCheckDialog.setContentText(message);
                 spellCheckDialog.showAndWait();
             }
-            
+
         });
 
         editMenu.getItems().addAll(spellCheck);
 
-        //open menu item
+        // open menu item
         MenuItem open = new MenuItem("Open");
-        //event handler for open menu item
+        // event handler for open menu item
         open.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -86,9 +86,9 @@ public class GUI extends Application {
 
         });
 
-        //save menu item
+        // save menu item
         MenuItem save = new MenuItem("Save");
-        //event handler for save menu item
+        // event handler for save menu item
         save.setOnAction(new EventHandler<ActionEvent>() {
             FileChooser saveFileDialog = new FileChooser();
 
@@ -101,9 +101,9 @@ public class GUI extends Application {
             }
         });
 
-        //exit menu item
+        // exit menu item
         MenuItem exit = new MenuItem("Exit");
-        //event handler for exit menu item
+        // event handler for exit menu item
         exit.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -117,20 +117,29 @@ public class GUI extends Application {
         return menuBar;
     }
 
-    public Alert getAlertWindow(){
-        return this.spellCheckDialog;
-    }
-
-    public String getTextAreaContent(){
-        return this.textarea.getText();
-    }
-
     private TextArea createTextArea() {
         this.textarea = new TextArea();
         this.textarea.setWrapText(true);
         return this.textarea;
     }
-    
+
+    private String getAlertMessage(String text){
+        AppController controller = AppController.getInstance();
+        List<String> list = controller.runSpellCheck(textarea.getText());
+        String message = "Misspelled: ";
+        message += list.get(0);
+        message+="\n";
+        list.remove(0);
+        if (list.isEmpty())
+            message+="Suggestions could not be found";
+        else{
+        for (String word : list) {
+            message+=word;
+            message+="; ";
+        }
+    }
+    return message;
+    }
 
     private void loadFileIntoTextArea(File file) {
         System.out.println("File name: " + file.getName());

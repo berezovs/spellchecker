@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -35,7 +34,7 @@ public class GUI extends Application {
         root.setTop(this.createMenu(stage));
         root.setCenter(this.createTextArea());
 
-        Scene scene = new Scene(root, 400, 300);
+        Scene scene = new Scene(root, 600, 500);
 
         stage.setTitle(WINDOW_NAME);
         stage.setScene(scene);
@@ -67,12 +66,17 @@ public class GUI extends Application {
 
                 while (result.get() == ButtonType.OK && !alertMessage.equals("")) {
                     alertMessage = AppController.getInstance().getNextSuggestion();
+                    alertMessage = alertMessage.trim();
+                    spellCheckDialog = new Alert(AlertType.CONFIRMATION);
 
                     if (alertMessage.equals("")) {
                         spellCheckDialog.setContentText("End of spellcheck!");
+                        spellCheckDialog.setHeaderText(null);
+                        spellCheckDialog.showAndWait();
+                        break;
                     }
 
-                    spellCheckDialog = new Alert(AlertType.CONFIRMATION);
+
                     spellCheckDialog.setTitle("Spellchecker");
                     spellCheckDialog.setHeaderText(null);
                     spellCheckDialog.setContentText(alertMessage);

@@ -7,13 +7,13 @@ public class AppController {
     private static AppController controller = null;
     private List<String> wordsFromTextArea = null;
     private SpellChecker spellChecker = null;
+    private WordBank wordBank = null;
     private int counter;
 
     private AppController(WordBank bank, SpellChecker spellChecker) {
         this.wordBank = bank;
         this.spellChecker = spellChecker;
         this.wordsFromTextArea = new ArrayList<>();
-        this.suggestions = new Hashtable<>();
         this.counter = 0;
     }
 

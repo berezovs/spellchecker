@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 import javafx.application.Application;
@@ -10,11 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
@@ -58,12 +55,30 @@ public class GUI extends Application {
 
             @Override
             public void handle(ActionEvent event) {
-                String message = getAlertMessage(textarea.getText());
+                AppController.getInstance().startSpellCheck(textarea.getText());
+                String alertMessage = AppController.getInstance().getNextSuggestion();
+
                 spellCheckDialog = new Alert(AlertType.CONFIRMATION);
                 spellCheckDialog.setTitle("Spellchecker");
                 spellCheckDialog.setHeaderText(null);
-                spellCheckDialog.setContentText(message);
-                spellCheckDialog.showAndWait();
+                spellCheckDialog.setContentText(alertMessage);
+
+                Optional<ButtonType> result = spellCheckDialog.showAndWait();
+
+                while (result.get() == ButtonType.OK && !alertMessage.equals("")) {
+                    alertMessage = AppController.getInstance().getNextSuggestion();
+
+                    if (alertMessage.equals("")) {
+                        spellCheckDialog.setContentText("End of spellcheck!");
+                    }
+
+                    spellCheckDialog = new Alert(AlertType.CONFIRMATION);
+                    spellCheckDialog.setTitle("Spellchecker");
+                    spellCheckDialog.setHeaderText(null);
+                    spellCheckDialog.setContentText(alertMessage);
+                    result = spellCheckDialog.showAndWait();
+
+                }
             }
 
         });
@@ -94,10 +109,10 @@ public class GUI extends Application {
 
             @Override
             public void handle(ActionEvent event) {
-                if (file == null) {
-                    file = saveFileDialog.showSaveDialog(stage);
-                }
-                saveFile(file);
+
+                file = saveFileDialog.showSaveDialog(stage);
+                if(file!=null)
+                    saveFile(file);
             }
         });
 
@@ -123,26 +138,8 @@ public class GUI extends Application {
         return this.textarea;
     }
 
-    private String getAlertMessage(String text){
-        AppController controller = AppController.getInstance();
-        List<String> list = controller.runSpellCheck(textarea.getText());
-        String message = "Misspelled: ";
-        message += list.get(0);
-        message+="\n";
-        list.remove(0);
-        if (list.isEmpty())
-            message+="Suggestions could not be found";
-        else{
-        for (String word : list) {
-            message+=word;
-            message+="; ";
-        }
-    }
-    return message;
-    }
 
     private void loadFileIntoTextArea(File file) {
-        System.out.println("File name: " + file.getName());
         try {
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {

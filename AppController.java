@@ -5,38 +5,49 @@ import java.util.List;
 
 public class AppController {
     private static AppController controller = null;
-    private List<String> wordsFromTextArea = null;
     private SpellChecker spellChecker = null;
     private WordBank wordBank = null;
+    private List<String> misspelledWords = null;
     private int counter;
 
     private AppController(WordBank bank, SpellChecker spellChecker) {
         this.wordBank = bank;
         this.spellChecker = spellChecker;
-        this.wordsFromTextArea = new ArrayList<>();
+        misspelledWords = new ArrayList<>();
         this.counter = 0;
     }
 
-    public void buildArrayOfWords(String text) {
-        wordsFromTextArea = Arrays.asList(text.replaceAll("[^a-zA-Z ]", "").split(" "));
+    public List<String> createArrayOfWordsFromText(String text) {
+        List<String> allWords = null;
+        return allWords = Arrays.asList(text.replaceAll("[\\,\\.]", "").split(" "));
     }
 
-    public List<String> runSpellCheck(String text) {
-        List<String> list = null;
-        
-        this.buildArrayOfWords(text);
-        for (String word : wordsFromTextArea) {
-           
-            if (!this.spellChecker.wordExists(word.trim().toLowerCase())) {
-                list = new ArrayList<>();
-               
+    public void startSpellCheck(String text) {
+        this.createListOfMisspelledWords(this.createArrayOfWordsFromText(text));
+    }
 
-                list = spellChecker.getListOfSuggestions(word); 
-                list.add(0, word);
-            }
+    public String getNextSuggestion() {
+        if(this.misspelledWords.isEmpty())
+            return "";
 
+        String word = this.misspelledWords.remove(0);
+        String returnString = "Misspelled: " + word;
+        String suggestions = spellChecker.getListOfSuggestions(word);
+        if (suggestions.equals("")) {
+            returnString += "\nNo suggestions have been found";
+        } else {
+            returnString += "\n";
+            returnString += suggestions;
         }
-        return list;
+        return returnString;
+    }
+
+    private void createListOfMisspelledWords(List<String> allWords) {
+
+        for (String word : allWords) {
+            if (!this.spellChecker.wordExists(word.trim().toLowerCase()))
+                this.misspelledWords.add(word.trim().toLowerCase());
+        }
     }
 
     public static void createInstance(WordBank wBank, SpellChecker sChecker) {

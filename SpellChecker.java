@@ -3,17 +3,17 @@ import java.util.List;
 
 class SpellChecker {
     private WordBank wordBank = null;
-    private List<String> suggestedWords = null;
+
 
     SpellChecker(WordBank bank) {
         this.wordBank = bank;
         
     }
 
-    public List<String> getListOfSuggestions(String word) {
+    public String getListOfSuggestions(String word) {
         String newWord = "";
         word = word.trim().toLowerCase();
-        suggestedWords = new ArrayList<>();
+        String suggestedWords = "";
 
         // add a letter to the word
         for (char letter = 'a'; letter <= 'z'; letter++) {
@@ -26,7 +26,7 @@ class SpellChecker {
                 newWord = leftSubStr.concat(rightSubStr);
 
                 if (this.wordExists(newWord))
-                    suggestedWords.add(newWord);
+                    suggestedWords+=newWord+" ";
             }
         }
 
@@ -34,7 +34,7 @@ class SpellChecker {
         for (int i = 0; i < word.length(); i++) {
             newWord = word.substring(0, i).concat(word.substring(i + 1));
             if (this.wordExists(newWord))
-                suggestedWords.add(newWord);
+                suggestedWords+=newWord+" ";
         }
 
         // reverse a word
@@ -42,7 +42,9 @@ class SpellChecker {
         strBuffer.reverse();
         newWord = strBuffer.toString();
         if (this.wordExists(newWord))
-            suggestedWords.add(newWord);
+            suggestedWords+=newWord+" ";
+
+        suggestedWords=suggestedWords.trim();
         return suggestedWords;
     }
 

@@ -37,6 +37,8 @@ public class GUI extends Application {
         stage.show();
     }
 
+
+    //constructs and returns a menubar
     public MenuBar createMenu(Stage stage) {
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
@@ -60,6 +62,7 @@ public class GUI extends Application {
         return menuBar;
     }
 
+    //creates an instance of a textarea
     private TextArea createTextArea() {
         this.textarea = new TextArea();
         this.textarea.setWrapText(true);
@@ -67,10 +70,13 @@ public class GUI extends Application {
     }
 
 
+    //entry point for the class
     public static void launchApp() {
         Application.launch();
     }
 
+
+    //eventhandler class for the Open menu item
     private class OpenFileEventHandler implements EventHandler<ActionEvent> {
         Stage stage = null;
 
@@ -100,6 +106,8 @@ public class GUI extends Application {
         }
     }
 
+
+    //event handler class for the Save File menu item
     private class FileSaverEventHandler implements EventHandler<ActionEvent> {
         Stage stage = null;
 
@@ -133,6 +141,8 @@ public class GUI extends Application {
         }
     }
 
+
+    //Event handler class for the Exit menu item
     private class ExitApplicationEventHandler implements EventHandler<ActionEvent> {
 
         @Override
@@ -142,7 +152,7 @@ public class GUI extends Application {
     }
 
 
-    //event handler for the Spell Check menu item
+    //Event handler for the Spell Check menu item
     private class SpellCheckEventHandler implements EventHandler<ActionEvent> {
 
         @Override

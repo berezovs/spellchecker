@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 class SpellChecker {
     private WordBank wordBank = null;
@@ -7,18 +9,20 @@ class SpellChecker {
 
     SpellChecker(WordBank bank) {
         this.wordBank = bank;
-        
+
     }
 
     public String getListOfSuggestions(String word) {
         String newWord = "";
         word = word.trim().toLowerCase();
-        String suggestedWords = "";
+
+        //will push words found in the dictionary into a hashset to avoid duplicate values
+        Set<String> suggestedWords = new HashSet<>();
 
         // add a letter to the word
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            for (int i = 0; i < word.length(); i++) {
-                
+            for (int i = 0; i <= word.length(); i++) {
+
                 String leftSubStr = word.substring(0, i);
                 String rightSubStr = word.substring(i);
 
@@ -26,7 +30,7 @@ class SpellChecker {
                 newWord = leftSubStr.concat(rightSubStr);
 
                 if (this.wordExists(newWord))
-                    suggestedWords+=newWord+" ";
+                    suggestedWords.add(newWord);
             }
         }
 
@@ -34,7 +38,7 @@ class SpellChecker {
         for (int i = 0; i < word.length(); i++) {
             newWord = word.substring(0, i).concat(word.substring(i + 1));
             if (this.wordExists(newWord))
-                suggestedWords+=newWord+" ";
+                suggestedWords.add(newWord);
         }
 
         // reverse a word
@@ -42,10 +46,14 @@ class SpellChecker {
         strBuffer.reverse();
         newWord = strBuffer.toString();
         if (this.wordExists(newWord))
-            suggestedWords+=newWord+" ";
+            suggestedWords.add(newWord);
 
-        suggestedWords=suggestedWords.trim();
-        return suggestedWords;
+
+        return this.toString(suggestedWords);
+    }
+
+    public String toString(Set<String> suggestions) {
+        return String.join(" ", suggestions);
     }
 
     public boolean wordExists(String word) {

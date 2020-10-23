@@ -57,31 +57,18 @@ public class GUI extends Application {
                 AppController.getInstance().startSpellCheck(textarea.getText());
                 String alertMessage = AppController.getInstance().getNextSuggestion();
 
-                spellCheckDialog = new Alert(AlertType.CONFIRMATION);
-                spellCheckDialog.setTitle("Spellchecker");
-                spellCheckDialog.setHeaderText(null);
-                spellCheckDialog.setContentText(alertMessage);
-
-                Optional<ButtonType> result = spellCheckDialog.showAndWait();
+                Optional<ButtonType> result = getSpellCheckAlertWindow(alertMessage).showAndWait();
 
                 while (result.get() == ButtonType.OK && !alertMessage.equals("")) {
                     alertMessage = AppController.getInstance().getNextSuggestion();
                     alertMessage = alertMessage.trim();
-                    spellCheckDialog = new Alert(AlertType.CONFIRMATION);
+
 
                     if (alertMessage.equals("")) {
-                        spellCheckDialog.setContentText("End of spellcheck!");
-                        spellCheckDialog.setHeaderText(null);
-                        spellCheckDialog.showAndWait();
+                        getSpellCheckAlertWindow("End of spellcheck").showAndWait();
                         break;
                     }
-
-
-                    spellCheckDialog.setTitle("Spellchecker");
-                    spellCheckDialog.setHeaderText(null);
-                    spellCheckDialog.setContentText(alertMessage);
-                    result = spellCheckDialog.showAndWait();
-
+                    getSpellCheckAlertWindow(alertMessage).showAndWait();
                 }
             }
 
@@ -142,6 +129,14 @@ public class GUI extends Application {
         return this.textarea;
     }
 
+    private Alert getSpellCheckAlertWindow(String message){
+        spellCheckDialog = new Alert(AlertType.CONFIRMATION);
+        spellCheckDialog.setTitle("Spellchecker");
+        spellCheckDialog.setHeaderText(null);
+        spellCheckDialog.setContentText(message);
+
+        return spellCheckDialog;
+    }
 
     private void loadFileIntoTextArea(File file) {
         try {

@@ -53,7 +53,7 @@ class SpellChecker {
     }
 
     public String toString(Set<String> suggestions) {
-        return String.join(" ", suggestions);
+        return String.join("\n", suggestions);
     }
 
     public boolean wordExists(String word) {

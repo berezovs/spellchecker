@@ -8,13 +8,13 @@ public class AppController {
     private SpellChecker spellChecker = null;
     private WordBank wordBank = null;
     private List<String> misspelledWords = null;
-    private int counter;
+
 
     private AppController(WordBank bank, SpellChecker spellChecker) {
         this.wordBank = bank;
         this.spellChecker = spellChecker;
         misspelledWords = new ArrayList<>();
-        this.counter = 0;
+
     }
 
     public List<String> createArrayOfWordsFromText(String text) {

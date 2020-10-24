@@ -81,7 +81,7 @@ public class GUI extends Application {
 
     //eventhandler class for the Open menu item
     private class OpenFileEventHandler implements EventHandler<ActionEvent> {
-        private Stage stage = null;
+        private final Stage stage;
 
         public OpenFileEventHandler(Stage stage) {
             this.stage = stage;
@@ -112,7 +112,7 @@ public class GUI extends Application {
 
     //event handler class for the Save File menu item
     private class FileSaverEventHandler implements EventHandler<ActionEvent> {
-        private Stage stage = null;
+        private final Stage stage;
         private final FileChooser saveFileDialog = new FileChooser();
 
         public FileSaverEventHandler(Stage stage) {
@@ -159,21 +159,31 @@ public class GUI extends Application {
 
         @Override
         public void handle(ActionEvent actionEvent) {
+            if(textarea.getText().equals("")){
+                getSpellCheckAlertWindow("Error: No text detected").showAndWait();
+                return;
+            }
+
             managerComponent.startSpellCheck(textarea.getText());
             String alertMessage = managerComponent.getNextSuggestion();
+            if (!alertMessage.equals(""))
+            {
+                Optional<ButtonType> result = getSpellCheckAlertWindow(alertMessage).showAndWait();
 
-            Optional<ButtonType> result = getSpellCheckAlertWindow(alertMessage).showAndWait();
+                while (result.get() == ButtonType.OK && !alertMessage.equals("")) {
+                    alertMessage = managerComponent.getNextSuggestion();
+                    alertMessage = alertMessage.trim();
 
-            while (result.get() == ButtonType.OK && !alertMessage.equals("")) {
-                alertMessage = managerComponent.getNextSuggestion();
-                alertMessage = alertMessage.trim();
-
-
-                if (alertMessage.equals("")) {
-                    getSpellCheckAlertWindow("End of spellcheck").showAndWait();
-                    break;
+                    //if there are misspelled words in text
+                    if (alertMessage.equals("")) {
+                        getSpellCheckAlertWindow("End of spellcheck").showAndWait();
+                        break;
+                    }
+                    getSpellCheckAlertWindow(alertMessage).showAndWait();
                 }
-                getSpellCheckAlertWindow(alertMessage).showAndWait();
+            }
+            else{
+                getSpellCheckAlertWindow("No misspelled words in text").showAndWait();
             }
         }
 

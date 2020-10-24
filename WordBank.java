@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class WordBank implements Dictionary{
 
-    private Hashtable<String, String> wordBank = null;
+    private Hashtable<String, String> wordBank;
 
     WordBank() {
         this.wordBank = new Hashtable<>();

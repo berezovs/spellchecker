@@ -3,7 +3,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SpellCheckManagerComponent implements SpellCheckManager{
-    private static final SpellCheckManagerComponent controller = null;
     private SpellChecker spellChecker = null;
     private List<String> misspelledWords = null;
 
@@ -14,9 +13,8 @@ public class SpellCheckManagerComponent implements SpellCheckManager{
 
     }
 
-    public List<String> createArrayOfWordsFromText(String text) {
-        List<String> allWords = null;
-        return allWords = Arrays.asList(text.replaceAll("[\\,\\.]", "").split(" "));
+    private List<String> createArrayOfWordsFromText(String text) {
+        return Arrays.asList(text.replaceAll("[\\,\\.]", "").split(" "));
     }
 
     public void startSpellCheck(String text) {

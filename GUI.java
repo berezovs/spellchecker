@@ -159,34 +159,34 @@ public class GUI extends Application {
 
         @Override
         public void handle(ActionEvent actionEvent) {
-            if(textarea.getText().equals("")){
+            if (textarea.getText().equals("")) {
                 getSpellCheckAlertWindow("Error: No text detected").showAndWait();
                 return;
             }
 
             managerComponent.startSpellCheck(textarea.getText());
             String alertMessage = managerComponent.getNextSuggestion();
-            if (!alertMessage.equals(""))
-            {
+            if (!alertMessage.equals("")) {
                 Optional<ButtonType> result = getSpellCheckAlertWindow(alertMessage).showAndWait();
 
-                while (result.get() == ButtonType.OK && !alertMessage.equals("")) {
+                //keep showing an alert message with suggestions until user clicks on Cancel or there are no more suggestions
+                while (result.get() == ButtonType.OK) {
                     alertMessage = managerComponent.getNextSuggestion();
                     alertMessage = alertMessage.trim();
 
-                    //if there are misspelled words in text
+                    //if there are no more misspelled words in text
                     if (alertMessage.equals("")) {
                         getSpellCheckAlertWindow("End of spellcheck").showAndWait();
                         break;
                     }
                     getSpellCheckAlertWindow(alertMessage).showAndWait();
                 }
-            }
-            else{
+            } else {
                 getSpellCheckAlertWindow("No misspelled words in text").showAndWait();
             }
         }
 
+        //returns an alert dialog window with a message specified by the method parameter
         private Alert getSpellCheckAlertWindow(String message) {
             Alert spellCheckDialog = new Alert(AlertType.CONFIRMATION);
             spellCheckDialog.setTitle("Spellchecker");

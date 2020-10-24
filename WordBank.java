@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.Hashtable;
 import java.util.Scanner;
 
-public class WordBank {
+public class WordBank implements Dictionary{
 
     private Hashtable<String, String> wordBank = null;
 
@@ -32,8 +32,6 @@ public class WordBank {
     }
 
     public boolean findWord(String word) {
-        if (wordBank.contains(word))
-            return true;
-        return false;
+        return wordBank.contains(word);
     }
 }

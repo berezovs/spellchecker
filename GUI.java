@@ -1,9 +1,3 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.Optional;
-import java.util.Scanner;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -16,10 +10,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Optional;
+import java.util.Scanner;
+
 public class GUI extends Application {
-    private final int WINDOW_HEIGHT = 600, WINDOW_WIDTH = 500;
-    private String WINDOW_NAME = "Spell Checker";
     private TextArea textarea = null;
+    private static SpellCheckManager managerComponent;
 
 
     @Override
@@ -30,8 +29,11 @@ public class GUI extends Application {
         root.setTop(this.createMenu(stage));
         root.setCenter(this.createTextArea());
 
+        int WINDOW_WIDTH = 500;
+        int WINDOW_HEIGHT = 600;
         Scene scene = new Scene(root, WINDOW_HEIGHT, WINDOW_WIDTH);
 
+        String WINDOW_NAME = "Spell Checker";
         stage.setTitle(WINDOW_NAME);
         stage.setScene(scene);
         stage.show();
@@ -39,7 +41,7 @@ public class GUI extends Application {
 
 
     //constructs and returns a menubar
-    public MenuBar createMenu(Stage stage) {
+    private MenuBar createMenu(Stage stage) {
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
         Menu editMenu = new Menu("Edit");
@@ -71,14 +73,15 @@ public class GUI extends Application {
 
 
     //entry point for the class
-    public static void launchApp() {
+    public static void launchApp(SpellCheckManager component) {
+        managerComponent = component;
         Application.launch();
     }
 
 
     //eventhandler class for the Open menu item
     private class OpenFileEventHandler implements EventHandler<ActionEvent> {
-        Stage stage = null;
+        private Stage stage = null;
 
         public OpenFileEventHandler(Stage stage) {
             this.stage = stage;
@@ -109,16 +112,15 @@ public class GUI extends Application {
 
     //event handler class for the Save File menu item
     private class FileSaverEventHandler implements EventHandler<ActionEvent> {
-        Stage stage = null;
+        private Stage stage = null;
+        private final FileChooser saveFileDialog = new FileChooser();
 
         public FileSaverEventHandler(Stage stage) {
             this.stage = stage;
         }
 
-        FileChooser saveFileDialog = new FileChooser();
-
         @Override
-        public void handle(ActionEvent event) {
+        public void handle(ActionEvent actionEvent) {
 
             File file = saveFileDialog.showSaveDialog(stage);
             if (file != null)
@@ -143,7 +145,7 @@ public class GUI extends Application {
 
 
     //Event handler class for the Exit menu item
-    private class ExitApplicationEventHandler implements EventHandler<ActionEvent> {
+    private static class ExitApplicationEventHandler implements EventHandler<ActionEvent> {
 
         @Override
         public void handle(ActionEvent actionEvent) {
@@ -157,13 +159,13 @@ public class GUI extends Application {
 
         @Override
         public void handle(ActionEvent actionEvent) {
-            AppController.getInstance().startSpellCheck(textarea.getText());
-            String alertMessage = AppController.getInstance().getNextSuggestion();
+            managerComponent.startSpellCheck(textarea.getText());
+            String alertMessage = managerComponent.getNextSuggestion();
 
             Optional<ButtonType> result = getSpellCheckAlertWindow(alertMessage).showAndWait();
 
             while (result.get() == ButtonType.OK && !alertMessage.equals("")) {
-                alertMessage = AppController.getInstance().getNextSuggestion();
+                alertMessage = managerComponent.getNextSuggestion();
                 alertMessage = alertMessage.trim();
 
 
